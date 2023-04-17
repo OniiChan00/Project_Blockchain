@@ -108,9 +108,29 @@ app.post('/updateInventory',urlencodedParser, (req, res) => {
     const inventory = req.body.inventory;
     const sql = "UPDATE user_inventory SET inventory = ? WHERE username = ?";
     pool.query(sql, [inventory,username], (err, result) => {
-            res.send(inventory)
+        if(err){
+            console.log(err);
+            res.send(err.sqlState);
+        }    
+        res.send("Inventory updated");
+
         });
 });
+
+
+app.post('/updateMoney',urlencodedParser, (req, res) => {
+    const username = req.body.username;
+    const money = req.body.money;
+    const sql = "UPDATE user SET money = ? WHERE username = ?";
+    pool.query(sql, [money,username], (err, result) => {
+        if(err){
+            console.log(err);
+            res.send(err.sqlState);
+        }
+        res.send("Money updated");
+        });
+});
+
 
 
 
