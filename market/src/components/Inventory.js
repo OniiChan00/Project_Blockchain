@@ -43,6 +43,8 @@ export default function Inventory() {
         }
 
         function onClickCancel(props){
+            var result = window.confirm("Want to delete?");
+            if (result) {
             props.sold = 0;
             // change to json
             let updated = JSON.stringify(data);
@@ -55,23 +57,23 @@ export default function Inventory() {
                 fetchdata();
             });
         }
+            else{
+                return;
+            }
+        }
 
         const displayItem = data.map((item, index) => {
             return <Item props={item}
                 onItemClick={onClicksellitem} 
                 onItemCancel={onClickCancel}
-                />
-
-                
-     
+                />        
         });
-
 
         return (
             <div className='container'>
                 <br/>
                 <center>
-                    <h1>Inventory</h1>
+                    <h1 style={{fontFamily:'Alkatra'}}>Inventory</h1>
                 </center>
 
                 <br/>
