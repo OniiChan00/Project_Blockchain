@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Register from './components/Register';
 import Login from './components/Login';
 import Inventory from './components/Inventory';
+import Profile from './components/Profile';
 import Nav_Bar from './components/Nav_Bar';
 
 
@@ -20,6 +21,7 @@ class App extends Component {
       <Route path="/" element={<Home/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path="/inventory" element={<Inventory/>}/>
+      <Route path="/profile" element={<Profile/>}/>
       </Routes>
       
       </div>

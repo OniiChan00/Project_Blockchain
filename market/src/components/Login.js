@@ -26,7 +26,10 @@ export default function Login() {
     console.log(username);
     console.log(password);
 
-
+  if(sessionStorage.getItem('User_data') != null){
+    window.location.href = 'http://localhost:3000/inventory/';
+  }
+  else{
   return (
     <div>
         <div className='container'>
@@ -47,4 +50,5 @@ export default function Login() {
     </div>
     </div>
   )
+}
 }

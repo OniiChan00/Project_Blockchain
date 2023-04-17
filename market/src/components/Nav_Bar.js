@@ -1,4 +1,4 @@
-import { AppstoreOutlined, MailOutlined, SettingOutlined,ExpandOutlined,FunctionOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, UserOutlined,ShopOutlined,LoginOutlined,ContainerOutlined} from '@ant-design/icons';
 import { Menu } from 'antd';
 import { useState } from 'react';
 import {useNavigate } from 'react-router-dom';
@@ -8,15 +8,10 @@ const items = [
     {
         label: 'Market',
         key: '/',
+        icon: <ShopOutlined />
         
     },
-    {
-      label: 'login',
-        key: '/login',
-      icon: <FunctionOutlined />,
-          
-       
-    },
+   ,
     {
         label: 'inventory',
           key: '/inventory',
@@ -27,10 +22,23 @@ const items = [
     {
         label: 'profile',
           key: '/profile',
-        icon: <AppstoreOutlined />,
+        icon: <UserOutlined/>,
             
          
     },
+    {
+        label: 'confirm',
+          key: '/confirm',
+        icon: <ContainerOutlined />,
+            
+         
+    },
+    {
+        label: 'login',
+          key: '/login',
+        icon: <LoginOutlined />, 
+         
+      },
     {
         label: 'Swagger',
         key: 'swagger',
