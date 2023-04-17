@@ -60,8 +60,8 @@ export default function Profile() {
                 </div>
                 <br/>
                 <button className='btn btn-primary' onClick={()=> {addMoney(100)}}>add 100</button> &nbsp;
-                <button className='btn btn-danger'>add 500</button>&nbsp;
-                <button className='btn btn-dark'>add 1000</button>&nbsp;
+                <button className='btn btn-danger' onClick={()=> {addMoney(500)}}>add 500</button>&nbsp;
+                <button className='btn btn-dark' onClick={()=> {addMoney(1000)}}>add 1000</button>&nbsp;
             </div>
         </div>
     )
