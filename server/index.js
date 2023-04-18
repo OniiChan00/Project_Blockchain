@@ -138,25 +138,6 @@ app.post('/updateMoney',urlencodedParser, (req, res) => {
 });
 
 
-
-
-app.post('/buy',urlencodedParser, (req, res) => {
-    const buyer = req.body.buyer;
-    const seller = req.body.seller;
-    const item = req.body.item;
-    const price = req.body.price;
-    const date = req.body.date;
-    //create blockchain transaction
-    //index
-    let index = trade_transaction.chain.length;
-    let block = new Block(index, date, item, buyer, seller);
-    trade_transaction.addBlock(block);
-    res.send(JSON.stringify(trade_transaction, null, 4));
-
-
-});
-
-
 app.post('/market_ex_insert',urlencodedParser, (req, res) =>  {
     const image = req.body.image;
     const itemid = req.body.itemid;
@@ -212,18 +193,41 @@ app.post('/market_ex_insert',urlencodedParser, (req, res) =>  {
     const buyer = req.body.buyer;
     const itemid  = req.body.itemid;
     const seller = req.body.seller;
+    const itemname = req.body.itemname;
     const sql = "UPDATE market_ex SET state = 'ขายแล้ว', buyer = ?, date_buy = ? WHERE itemid = ? AND seller = ?";
     pool.query(sql, [buyer, date_buy, itemid, seller], (err, result) => {
       if (err) {
-        console.log(err);
-        res.sendStatus(500);
+        console.log(err);   
       } else {
         console.log(result);
-        res.sendStatus(200);
       }
     });
+    let index = trade_transaction.chain.length;
+    let block = new Block(index, date_buy, itemname,itemid ,buyer, seller);
+    trade_transaction.addBlock(block);
+    res.send(trade_transaction.chain[index].hash);
   });
   
+
+  app.post('/checkblock',(req, res) => {
+    const hash = req.body.hash;
+    trade_transaction.chain.forEach(block => {
+     if (block.hash === hash) {
+        res.send(block);
+      }
+    });
+    res.send("not found");
+  });
+
+
+  app.get('/blockchain', (req, res) => {
+    res.send(trade_transaction.chain);
+  });
+
+  
+
+    
+
   
 
   
