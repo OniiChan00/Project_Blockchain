@@ -207,18 +207,19 @@ app.post('/market_ex_insert',urlencodedParser, (req, res) =>  {
     });
   });
 
-  app.get('/market_ex_update', (req, res) => {
-    const state = req.body.state;
+  app.post('/market_ex_update', (req, res) => {
     const date_buy = req.body.date_buy;
     const buyer = req.body.buyer;
     const itemid  = req.body.itemid;
-    const sql = "UPDATE market_ex SET state = 'รอการยืนยัน', date_buy = ?, buyer = ? WHERE itemid = ?";
-    pool.query(sql, [date_buy, buyer, state ,itemid], (err, result) => {
+    const seller = req.body.seller;
+    const sql = "UPDATE market_ex SET state = 'ขายแล้ว', buyer = ?, date_buy = ? WHERE itemid = ? AND seller = ?";
+    pool.query(sql, [buyer, date_buy, itemid, seller], (err, result) => {
       if (err) {
         console.log(err);
-        res.send("Error retrieving data");
+        res.sendStatus(500);
       } else {
-        res.send(result);
+        console.log(result);
+        res.sendStatus(200);
       }
     });
   });
