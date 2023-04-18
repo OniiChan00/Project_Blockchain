@@ -21,47 +21,72 @@ export default function Inventory() {
             });
         };
 
+
         useEffect(() => {
             fetchdata();
             console.log(data);
         }, []);
 
 
-        function onClicksellitem(props) { // change json property
+        function onClicksellitem(props) {
             props.sold = 1;
             // change to json
             let updated = JSON.stringify(data);
             console.log(updated);
-
+          
             // update item
             axios.post('http://localhost:5000/updateInventory', {
-                username: username,
-                inventory: updated
+              username: username,
+              inventory: updated
+            }).then(res => {
+              fetchdata();
+            });
+            // get the current date and time
+            const currentDate = new Date();
+            // format the date in yyyy-mm-dd format
+            currentDate.setHours(currentDate.getHours() + 7);
+            const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+
+            // insert to market_ex
+            axios.post('http://localhost:5000/market_ex_insert', {
+            image: props.image,
+            itemid: props.itemid,
+            itempos: props.itempos,
+            item_name: props.name,
+            price: props.price,
+            date_sale: formattedDate,
+            seller: username
             }).then(res => {
                 fetchdata();
             });
         }
-
         function onClickCancel(props){
             var result = window.confirm("Want to delete?");
             if (result) {
-            props.sold = 0;
-            // change to json
-            let updated = JSON.stringify(data);
-            console.log(updated);
-            // update item
-            axios.post('http://localhost:5000/updateInventory', {
+              // make an API call to delete the item from market_ex table
+              axios.post('http://localhost:5000/deleteItem', {
+                itemid: props.itemid
+              }).then(res => {
+                console.log(res.data);
+                fetchdata();
+              });
+              
+              // set sold status to 0 in the inventory table
+              props.sold = 0;
+              let updated = JSON.stringify(data);
+              console.log(updated);
+              axios.post('http://localhost:5000/updateInventory', {
                 username: username,
                 inventory: updated
-            }).then(res => {
+              }).then(res => {
                 fetchdata();
-            });
-        }
-            else{
-                return;
+              });
             }
-        }
-
+            else{
+              return;
+            }
+          }
+          
         const displayItem = data.map((item, index) => {
             return <Item props={item}
                 onItemClick={onClicksellitem} 
@@ -83,5 +108,3 @@ export default function Inventory() {
             </div>
         )
     }
-
-
