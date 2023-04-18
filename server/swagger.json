@@ -166,7 +166,7 @@
         }
       }
     },
-    "/buy": {
+    "/market_ex_insert": {
       "post": {
         "description": "",
         "parameters": [
@@ -176,22 +176,149 @@
             "schema": {
               "type": "object",
               "properties": {
+                "image": {
+                  "example": "any"
+                },
+                "itemid": {
+                  "example": "any"
+                },
+                "itempos": {
+                  "example": "any"
+                },
+                "item_name": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                },
+                "state": {
+                  "example": "any"
+                },
                 "buyer": {
                   "example": "any"
                 },
                 "seller": {
                   "example": "any"
                 },
-                "item": {
+                "date_sale": {
                   "example": "any"
                 },
-                "price": {
+                "date_buy": {
                   "example": "any"
                 }
               }
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/deleteItem": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "itemid": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/market_ex": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/market_ex_update": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date_buy": {
+                  "example": "any"
+                },
+                "buyer": {
+                  "example": "any"
+                },
+                "itemid": {
+                  "example": "any"
+                },
+                "seller": {
+                  "example": "any"
+                },
+                "itemname": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/checkblock": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hash": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/blockchain": {
+      "get": {
+        "description": "",
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
