@@ -36,8 +36,10 @@ export default function Home() {
             date_buy: formattedDate,
             buyer: username,
             itemid: props.itemid,
+            itempos: props.itempos,
             seller: props.seller,
             itemname: props.item_name,
+            props: props
 
         }).then(res => {
             fetchData();
