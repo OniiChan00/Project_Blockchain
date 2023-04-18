@@ -27,13 +27,6 @@ const items = [
          
     },
     {
-        label: 'confirm',
-          key: '/confirm',
-        icon: <ContainerOutlined />,
-            
-         
-    },
-    {
         label: 'login',
           key: '/login',
         icon: <LoginOutlined />, 
