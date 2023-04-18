@@ -1,8 +1,6 @@
 import React from 'react'
 
 export default function Item(props) {
-    //console.log(props)
-    console.log(props)
     return (
     <div className='container'>
         <div className='card'>
@@ -17,8 +15,7 @@ export default function Item(props) {
                 }
                 &nbsp;
                   {
-                    props.props.sold === 1 ? <button className='btn btn-danger' onClick={() => {props.onItemCancel(props.props)}} >cancel</button> : <button className='btn btn-dark' onClick={() => {props.onItemCancel(props.props)}} disabled>cancel</button>
-                    
+                    props.props.sold === 1 ? <button className='btn btn-danger' onClick={() => {props.onItemCancel(props.props)}} >cancel</button> : <button className='btn btn-dark' onClick={() => {props.onItemCancel(props.props)}} disabled>cancel</button> 
                  }
                 </center>
                 

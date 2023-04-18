@@ -11,6 +11,7 @@ export default function Home() {
     
     const user_data = sessionStorage.getItem('User_data');
     const [username, setUser] = useState(JSON.parse(user_data).username);
+    const [data, setData] = useState();
     
 
     useEffect(() => {
@@ -40,6 +41,7 @@ export default function Home() {
 
         }).then(res => {
             fetchData();
+            setData(<div><br/><div class="alert alert-primary" role="alert">please keep this hash for checking transaction: {res.data} </div></div>);
         });
 
     }
@@ -109,12 +111,13 @@ export default function Home() {
 
     return (
         <div className="container">
-
+            {data}
             <br/>
             <center>
                 <h1 style={
                     {fontFamily: "Alkatra"}
                 }>Market Exchange</h1>
+
             </center>
             <br/>
             <table className="table table-striped table-hover">
