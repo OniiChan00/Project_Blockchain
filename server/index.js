@@ -194,6 +194,7 @@ app.post('/market_ex_insert',urlencodedParser, (req, res) =>  {
     const itemid  = req.body.itemid;
     const seller = req.body.seller;
     const itemname = req.body.itemname;
+    const props = req.body.props;
     const sql = "UPDATE market_ex SET state = 'ขายแล้ว', buyer = ?, date_buy = ? WHERE itemid = ? AND seller = ?";
     pool.query(sql, [buyer, date_buy, itemid, seller], (err, result) => {
       if (err) {
@@ -205,6 +206,71 @@ app.post('/market_ex_insert',urlencodedParser, (req, res) =>  {
     let index = trade_transaction.chain.length;
     let block = new Block(index, date_buy, itemname,itemid ,buyer, seller);
     trade_transaction.addBlock(block);
+
+    //update inventory
+    let sql2 = "SELECT inventory FROM user_inventory WHERE username = ?";
+    pool.query(sql2, [buyer], (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        let inventory = result[0].inventory;
+        let new_inventory = JSON.parse(inventory);
+        //set new item position
+        let itempos = new_inventory.length;
+        //set new item id randomly
+        let itemid = Math.floor(Math.random() * 1000000000);
+        let new_item = {
+          itempos: itempos,
+          itemid: itemid,
+          name: itemname,
+          price : props.price,
+          image: props.image,
+        };
+        new_inventory.push(new_item);
+        //update index
+        for (let i = 0; i < new_inventory.length; i++) {
+          new_inventory[i].itempos = i;
+        }
+        let new_inventory_string = JSON.stringify(new_inventory);
+        let sql3 = "UPDATE user_inventory SET inventory = ? WHERE username = ?";
+        pool.query(sql3, [new_inventory_string, buyer], (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(result);
+          }
+        });
+      }
+    });
+
+    //remove item from seller
+    let sql4 = "SELECT inventory FROM user_inventory WHERE username = ?";
+    pool.query(sql4, [seller], (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        let inventory = result[0].inventory;
+        let new_inventory = JSON.parse(inventory);
+        for (let i = 0; i < new_inventory.length; i++) {
+          if (new_inventory[i].itempos === props.itempos && new_inventory[i].itemid === itemid) {
+            new_inventory.splice(i, 1); 
+          }
+        }
+        //update index
+        for (let i = 0; i < new_inventory.length; i++) {
+          new_inventory[i].itempos = i;
+        }
+        let new_inventory_string = JSON.stringify(new_inventory);
+        let sql5 = "UPDATE user_inventory SET inventory = ? WHERE username = ?";
+        pool.query(sql5, [new_inventory_string, seller], (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(result);
+          }
+        });
+      }
+    });
     res.send(trade_transaction.chain[index].hash);
   });
   
