@@ -7,6 +7,11 @@ var jsonParser = bodyParser.json()
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
+let Blockchain = require('./blockchain.js');
+let trade_transaction = new Blockchain();
+let Block = require('./block.js');
+
+
 
 
 require('dotenv').config();
@@ -18,6 +23,7 @@ app.use(cors());
 
 app.use(bodyParser.json());
 var urlencodedParser = bodyParser.urlencoded({ extended: true })
+
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST, 
@@ -134,8 +140,100 @@ app.post('/updateMoney',urlencodedParser, (req, res) => {
 
 
 
+app.post('/buy',urlencodedParser, (req, res) => {
+    const buyer = req.body.buyer;
+    const seller = req.body.seller;
+    const item = req.body.item;
+    const price = req.body.price;
+    const date = req.body.date;
+    //create blockchain transaction
+    //index
+    let index = trade_transaction.chain.length;
+    let block = new Block(index, date, item, buyer, seller);
+    trade_transaction.addBlock(block);
+    res.send(JSON.stringify(trade_transaction, null, 4));
+
+
+});
+
+
+app.post('/market_ex_insert',urlencodedParser, (req, res) =>  {
+    const image = req.body.image;
+    const itemid = req.body.itemid;
+    const itempos = req.body.itempos;
+    const item_name = req.body.item_name;
+    const price = req.body.price;
+    let state = req.body.state;
+    const buyer = req.body.buyer;
+    const seller = req.body.seller;
+    const date_sale = req.body.date_sale;
+    const date_buy = req.body.date_buy;
+  
+    // insert to database
+    state = "รอคำสั่งซื้อ";
+    let sql = 'INSERT INTO market_ex (image, itempos, itemid, item_name, price, state, buyer, seller, date_sale, date_buy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    pool.query(sql, [image, itempos, itemid, item_name, price, state, buyer, seller, date_sale, date_buy], function(err, result) {
+      if (err) throw err;
+      console.log(result);image
+      res.send(result);
+    });
+  });
+
+  app.post('/deleteItem', (req, res) => {
+    const itemid = req.body.itemid;
+    const sql = "DELETE FROM market_ex WHERE itemid = ?";
+    pool.query(sql, [itemid], (err, result) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus(500);
+      } else {
+        console.log(result);
+        res.sendStatus(200);
+      }
+    });
+  });
+
+  
+
+  app.get('/market_ex', (req, res) => {
+    const sql = "SELECT * FROM market_ex WHERE state = 'รอคำสั่งซื้อ'";
+    pool.query(sql, (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send("Error retrieving data");
+      } else {
+        res.send(result);
+      }
+    });
+  });
+
+  app.get('/market_ex_update', (req, res) => {
+    const state = req.body.state;
+    const date_buy = req.body.date_buy;
+    const buyer = req.body.buyer;
+    const itemid  = req.body.itemid;
+    const sql = "UPDATE market_ex SET state = 'รอการยืนยัน', date_buy = ?, buyer = ? WHERE itemid = ?";
+    pool.query(sql, [date_buy, buyer, state ,itemid], (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send("Error retrieving data");
+      } else {
+        res.send(result);
+      }
+    });
+  });
+  
+  
+
+  
+
+
+
+
+
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 
 
