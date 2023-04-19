@@ -22,22 +22,8 @@ class Blockchain{
     constructor(){
         this.chain = [this.createGenesisBlock()];
     }
-
     createGenesisBlock(){
-        try{
-            //openfile
-            const fs = require('fs');
-            const data = fs.readFileSync('blockchain.json');
-            const json = JSON.parse(data).chain;
-            //onsole.log("loading blockchain.json")
-            //console.log(json)
-            return json;
-        }
-        catch(err){
-            console.log("creating new blockchain")
-            return new Block(0, "01/01/2017", "Genesis block", "0", "0");
-        }
-
+        return new Block(0, "01/01/2017", "Genesis block", "0");
     }
     
     getLatestBlock(){

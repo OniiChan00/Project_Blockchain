@@ -3,7 +3,6 @@ var cors = require("cors");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
-const fs = require("fs");
 const SHA256 = require("crypto-js/sha256");
 
 const swaggerUi = require("swagger-ui-express");
@@ -22,6 +21,7 @@ const add_item = require("./db_management/market/add_item.js");
 const update_inventory = require("./db_management/user/update_inventory.js");
 const display_market = require("./db_management/market/display_market.js");
 const deleteItem = require("./db_management/market/delete_item.js");
+
 const random_item = require("./random_item/random.js");
 
 
@@ -68,7 +68,6 @@ app.post("/inventory", urlencodedParser, (req, res) => {
   const username = req.body.username;
   (async () => {
     let inventory = await user_inventory(username);
-    console.log(inventory);
     res.send(inventory[0].inventory);
   })();
 });
@@ -103,7 +102,7 @@ app.post("/market_ex_insert", urlencodedParser, (req, res) => {
   let sql = 'INSERT INTO market_ex (image, itempos, itemid, item_name, price, state, buyer, seller, date_sale, date_buy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
   pool.query(sql, [image, itempos, itemid, item_name, price, state, buyer, seller, date_sale, date_buy], function(err, result) {
     if (err) throw err;
-    console.log(result);
+    console.log(result);image
     res.send(result);
   });
 });
@@ -184,20 +183,11 @@ app.post("/market_ex_update", (req, res) => {
   const itemid = req.body.itemid;
   const seller = req.body.seller;
   const itemname = req.body.itemname;
-  
-  let blockchain = JSON.parse(fs.readFileSync("blockchain.json"));
-  let index = blockchain.chain.length;
+  let index = trade_transaction.chain.length;
   let block = new Block(index, date_buy, itemname, itemid, buyer, seller);
-  block.previousHash = blockchain.chain[index - 1].hash;
-  blockchain.chain.push(block);
-  fs.writeFileSync("blockchain.json", JSON.stringify(blockchain,null,4), );
-  console.log(blockchain.chain);
-  blockchain = JSON.parse(fs.readFileSync("blockchain.json"));
-  //get hash from last block
-  bloackhash = blockchain.chain[blockchain.chain.length - 1].hash;
-  res.send(bloackhash);
+  trade_transaction.addBlock(block);
   
-
+  res.send(trade_transaction.chain[index].hash);
 });
 
 
@@ -205,17 +195,13 @@ app.post("/market_ex_update", (req, res) => {
 
 app.post("/checkblock", (req, res) => {
   const hash = req.body.hash;
-  let blockchain = JSON.parse(fs.readFileSync("blockchain.json"));
-  let index = blockchain.chain.findIndex((item) => item.hash === hash);
-  if (index !== -1) {
-    res.send(blockchain.chain[index]);
-  } else {
-    res.send("not found");
-  }
-  res.send("not found");
+  trade_transaction.chain.forEach((block) => {
+    if (block.hash === hash) {
+      res.send(block);
+    }
   });
-  
-
+  res.send("not found");
+});
 
 app.get("/blockchain", (req, res) => {
   res.send(trade_transaction.chain);
@@ -226,4 +212,3 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.listen(5000, function () {
   console.log("web server listening on port 5000");
 });
-

@@ -10,7 +10,7 @@ const random = () => {
     for (let i = 0; i < randomItemsNumber; i++) {
         let random = Math.floor(Math.random() * item.length)
         randomItems.push(item[random])
-        randomItems[i].itemid = SHA256(randomItems[i].name + randomItems[i].price + i).toString()
+        randomItems[i].itemid = SHA256(randomItems[i].name + randomItems[i].price + randomItems[i].image + i).toString()
         randomItems[i].itempos = i
     }
 
