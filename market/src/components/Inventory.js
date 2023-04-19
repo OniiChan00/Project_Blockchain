@@ -33,7 +33,6 @@ export default function Inventory() {
             // change to json
             let updated = JSON.stringify(data);
             console.log(updated);
-          
             // update item
             axios.post('http://localhost:5000/updateInventory', {
               username: username,
@@ -41,6 +40,8 @@ export default function Inventory() {
             }).then(res => {
               fetchdata();
             });
+
+
             // get the current date and time
             const currentDate = new Date();
             // format the date in yyyy-mm-dd format
@@ -55,7 +56,8 @@ export default function Inventory() {
             item_name: props.name,
             price: props.price,
             date_sale: formattedDate,
-            seller: username
+            seller: username,
+            image: props.image,
             }).then(res => {
                 fetchdata();
             });
@@ -63,15 +65,11 @@ export default function Inventory() {
         function onClickCancel(props){
             var result = window.confirm("Want to delete?");
             if (result) {
-              // make an API call to delete the item from market_ex table
               axios.post('http://localhost:5000/deleteItem', {
                 itemid: props.itemid
               }).then(res => {
                 console.log(res.data);
-                fetchdata();
               });
-              
-              // set sold status to 0 in the inventory table
               props.sold = 0;
               let updated = JSON.stringify(data);
               console.log(updated);
@@ -81,6 +79,8 @@ export default function Inventory() {
               }).then(res => {
                 fetchdata();
               });
+              fetchdata();
+           
             }
             else{
               return;

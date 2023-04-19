@@ -15,6 +15,7 @@ export default function Profile() {
     const [add, setAdd] = useState(0)
     const [hash, setHash] = useState('')
     const [block, setBlock] = useState([])
+    const [data, setData] = useState([])
 
     
     function addMoney(value) {
@@ -43,7 +44,33 @@ export default function Profile() {
         axios.post('http://localhost:5000/checkblock', {
             hash: hash
         }).then(res => {
-            setBlock(JSON.stringify(res.data, null, 4));
+            // do boostrap 5 table for show data
+            console.log(res.data);
+            setBlock(<div>
+                <table className='table'>
+                    <thead>
+                        <tr>
+                            <th scope='col'>Block Number</th>
+                            <th scope='col'>Timestamp</th>
+                            <th scope='col'>Hash</th>
+                            <th scope='col'>item</th>
+                            <th scope='col'>seller</th>
+                            <th scope='col'>buyer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{res.data.index}</td>
+                            <td>{res.data.timestamp}</td>
+                            <td>{res.data.hash}</td>
+                            <td>{res.data.item}</td>
+                            <td>{res.data.seller}</td>
+                            <td>{res.data.buyer}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>)
+          
         });
     }
 

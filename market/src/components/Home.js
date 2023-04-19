@@ -28,6 +28,10 @@ export default function Home() {
     };
 
     function onClickBuy(props) { // get the current date and time
+        if(props.seller == username){
+            setData(<div><br/><div class="alert alert-danger" role="alert">You can't buy your own item</div></div>);
+            return;
+        }
         console.log(props);
         const currentDate = new Date();
         currentDate.setHours(currentDate.getHours() + 7);
@@ -39,11 +43,12 @@ export default function Home() {
             itempos: props.itempos,
             seller: props.seller,
             itemname: props.item_name,
-            props: props
+            props: props,
+            image: props.image,
 
         }).then(res => {
-            fetchData();
             setData(<div><br/><div class="alert alert-primary" role="alert">please keep this hash for checking transaction: {res.data} </div></div>);
+            fetchData();
         });
 
     }
